@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -11,6 +12,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.zhangqiang.myapplication.VolleyApplication;
+import com.example.zhangqiang.myapplication.mode.HttpResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +80,22 @@ public class VolleyUtils {
                 // TODO: 处理错误
                 Log.e("### onErrorResponse", "GET_StringRequest:" + error.toString());
             }
-        });
+        }){
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                super.deliverError(error);
+            }
+
+            @Override
+            protected void deliverResponse(String response) {
+                super.deliverResponse(response);
+            }
+        };
 
         //为request设置tag，通过该tag在全局队列中访问request
         stringRequest.setTag(VOLLEY_TAG);//StringRequestTest_GET
@@ -313,5 +330,20 @@ public class VolleyUtils {
         });
 
         myVolleyRequest.requestPost(url_GET, "my_get_" + VOLLEY_TAG,paramMap);
+    }
+
+    public void myRequest_GET(){
+        MyVolleyRequest myVolleyRequest = new MyVolleyRequest(new MyVolleyRequest.MyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Log.i("### onSuccess", "myRequest_GET" + response);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.i("### onError", "myRequest_GET" + error);
+            }
+        });
+        myVolleyRequest.requestMy_GET(url_GET,"MyRequest.java");
     }
 }

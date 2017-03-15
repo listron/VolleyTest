@@ -12,6 +12,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.zhangqiang.myapplication.VolleyApplication;
+import com.example.zhangqiang.myapplication.mode.HttpResponse;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -23,6 +26,7 @@ public class MyVolleyRequest {
     private Context mContext;
     private Response.Listener<String> mListener;
     private Response.ErrorListener mErrorListener;
+    private Response.Listener<JSONObject> myListener;
 
     public MyVolleyRequest(final Callback callback) {
 
@@ -41,8 +45,25 @@ public class MyVolleyRequest {
                 callback.onError(error);
             }
         };
+
     }
 
+    public MyVolleyRequest(final MyCallback callback) {
+
+        mErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(error);
+            }
+        };
+
+        myListener = new Response.Listener<JSONObject>(){
+            @Override
+            public void onResponse(JSONObject httpResponse) {
+                callback.onSuccess(httpResponse);
+            }
+        };
+    }
     public void requestGet(String url, String tag) {
 
         //先取消已有的网络请求，避免重复请求
@@ -76,5 +97,25 @@ public class MyVolleyRequest {
         void onSuccess(String response);
 
         void onError(VolleyError error);
+
+    }
+
+
+
+    public void requestMy_GET(String url,String tag){
+        VolleyApplication.getRequestQueue().cancelAll(tag);
+
+        MyRequest myRequest = new MyRequest(Request.Method.GET,url,myListener,mErrorListener);
+        myRequest.setTag(tag);
+
+        VolleyApplication.getRequestQueue().add(myRequest);
+        VolleyApplication.getRequestQueue().start();
+    }
+
+    public interface MyCallback {
+
+        void onError(VolleyError error);
+
+        void onSuccess(JSONObject response);
     }
 }
