@@ -1,12 +1,24 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.droidtitan.lintcleaner'
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.droidtitan:lint-cleaner-plugin:0.3.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -19,13 +31,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+    lintCleaner {
+        // Exclude specific files
+        exclude = ['AndroidManifest.xml']
+
+        // Ability to ignore all resource files. False by default.
+        ignoreResFiles = true
+
+        // Default path is build/outputs/lint-results.xml
+        lintXmlFilePath = 'librarys/build/outputs/lint-results-debug.xml'
+    }
+
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    /*androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    testCompile 'junit:junit:4.12'
+    })*/
+    //compile 'com.android.support:appcompat-v7:23.0.3'
+    //testCompile 'junit:junit:4.12'
 }

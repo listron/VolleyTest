@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn com.alibaba.fastjson.**
+-keep class com.alibaba.fastjson.**{*;}
+-dontwarn com.android.volley.**
+-keep class com.android.volley.**{*;}

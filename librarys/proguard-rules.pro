@@ -15,3 +15,4 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+## keep class 包名.* 保持包名下的所有类不被混淆
